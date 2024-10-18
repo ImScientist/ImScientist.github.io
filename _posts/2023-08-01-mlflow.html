@@ -1,0 +1,99 @@
+---
+layout:     post
+title:      "MLflow on Kubernetes"
+date:       2023-08-01 10:00:00 +0200
+front_img:  "assets/blog_content/mlflow/mlflow.png"
+subtitle:   "We will containerize and deploy a MLflow server on a Kubernetes cluster on Google cloud. We will also create the MLflow backend DB, the artifact store and all required service accounts, and secrets on Google cloud. This is achieved by using either gcloud SDK or terraform. The deployment code is also provided."
+github:     "https://github.com/ImScientist/mlflow"
+keywords:   "MLflow, Kubernetes,Google Cloud"
+permalink:  /posts/mlflow/
+---
+<p>
+We will containerize and deploy a MLflow server on a Kubernetes cluster on Google cloud. We will also create the MLflow backend DB, the artifact store and all required service accounts, and secrets on Google cloud. This is achieved by using either gcloud SDK or terraform. The deployment code can be found <a href="https://github.com/ImScientist/mlflow">here</a>.
+</p>
+<figure>
+    <img src='/assets/blog_content/mlflow/mlflow.png' alt="Architecture" >
+</figure>
+
+<h3>1. Infrastructure</h3>
+
+<p>
+We will create the following resources in Google cloud:
+<ul>
+  <li>Bucket in cloud storage that will be used as artifact storage</li>
+  <li>PostreSQL DB in cloud SQL that will be used as mlflow backend db</li>
+  <li>Container registry (GCR) that will host our custom mlflow image defined
+  <a href="https://github.com/ImScientist/mlflow/tree/master/mlflow_server">here</a> </li>
+  <li>Service account (and json-key) with access to GCS and cloud SQL</li>
+  <li>Service account (and json-key) with access to GCR (used by the Google node pool to pull images from GCR)</li>
+</ul>
+</p>
+
+<p>
+The kubernetes cluster contains:
+<ul>
+  <li>Kubernetes Secret that contains credentials of the service account with GCS and SQL access, as well as access to the backend db</li>
+  <li>Kuberentes Configmap</li>
+  <li>Kubernetes Deployment where each pod holds two containers:</li>
+    <ul>
+      <li>cloud sql auth proxy container that creates a secure connection to the PostgreSQL DB</li>
+      <li>mlflow server that connects to the PostgreSQL DB via the cloud sql auth proxy. We use a custom build image that is defined
+      <a href="https://github.com/ImScientist/mlflow/tree/master/mlflow_server">here</a>.</li>
+    </ul>
+  <li>Kubernetes Service</li>
+</ul>
+</p>
+
+<h3>2. Deployment with Google cloud SDK</h3>
+
+<p>
+We will rely on the Google cloud SDK to create the resources of interest. To run the commands below you need to have gsutil, gcloud and OpenSSL CLIs installed.
+
+<ul>
+  <li>Setup environment variables:
+  <script src="https://gist.github.com/ImScientist/4e3809076a33f6f43783f7306a1c46f4.js"></script>
+  </li>
+
+  <li>Create the required resources in Google cloud (except the kubernetes cluster):
+  <script src="https://gist.github.com/ImScientist/4ce4e6bf1b404ba5d8763ec75819ec0e.js"></script> Unfortunately, I am not able to create a kubernetes cluster with the gcloud sdk so you have to use the UI to create it.
+  </li>
+
+  <li>Creation of the Kubernetes cluster components. You have to change the kubectl context: <script src="https://gist.github.com/ImScientist/bcb1b6bc389dd014cd2e09d54e809e13.js"></script>
+  There is an option for local deployment with docker-desktop. In this case you have to create a docker-registry secret that porvides access to the container registry with our custom mlflow image: <script src="https://gist.github.com/ImScientist/5ea7933da4d5c62853723cd21901bc97.js"></script>
+  The commands for the creation of the remaining components are the same both for the local and for the Google cloud deployment:
+  <script src="https://gist.github.com/ImScientist/a030cffd6c9d67a00345cf21dfc1cdd4.js"></script>
+  </li>
+
+  <li>Test if everything works: <br>
+  To test if the Mflow server is running you can execute the following python code snippet and verify through the mlflow UI that the results are logged. In the experiment definition you will see that we are using the <code>GCS_CREDENTIALS</code> to store the artifacts in GCS. You also have to change the tracking URI.
+  <script src="https://gist.github.com/ImScientist/07215003e56e18aa9611c4af31ad1534.js"></script>
+  </li>
+</ul>
+</p>
+
+<h3>3. Deployment with terraform</h3>
+<p>
+To understand the following code snippets you should look at the source code provided <a href="https://github.com/ImScientist/mlflow">here</a>.
+<ul>
+<li>Install the terraform version manager. We will work with version 1.2.7: <script src="https://gist.github.com/ImScientist/b9b548a0dce26ffcf95c77d7bda24fa7.js"></script></li>
+
+<li>Set the <code>project</code>, <code>region</code> and <code>zone</code> in <code>./terrafrom/variables.tf</code> and authenticate: <script src="https://gist.github.com/ImScientist/dc47e70f0db21a09b69c127fd9f34ec4.js"></script>
+
+The following command will create the required infrastructure (backend db, cloud storage, kubernetes cluster and service accounts). It will also create the namespace mlflow and add to it a config-map and a secret with all relevant credentials for the service.<script src="https://gist.github.com/ImScientist/ba13f7378c06e9753acf9c5f7faaafa8.js"></script></li>
+
+<li>To deploy the service, we first have to build a mlflow-server image (content in ./mlflow_server directory) and push it to the container registry in our project. We will use Google cloud build. As a result the image <code>gcr.io/${PROJECT_ID}/mlflow:${TAG_NAME}</code> should be created. <script src="https://gist.github.com/ImScientist/39e619fd1bfd72b7d2e368d8b06ed602.js"></script>
+</li>
+
+<li>The remaining components that have to be created are described in <code>kubernetes/mlflow.yaml</code>. We have to change the image of the mlflow-server-container (line 21) to point to the image that we have created in the previous step. We can use kubectl to crete the missing components: <script src="https://gist.github.com/ImScientist/706a958cfabab12e250012034c6c1e0b.js"></script>
+</li>
+</ul>
+</p>
+
+
+<h3>4. Resources</h3>
+
+<ul>
+  <li>
+  <a href="https://colinwilson.uk/2020/07/09/using-google-container-registry-with-kubernetes/">Using Google Container Registry (GCR) with Kubernetes</a>
+  </li>
+</ul>

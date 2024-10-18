@@ -1,0 +1,51 @@
+---
+layout: base
+---
+
+<!-- Main Content -->
+<div class="container col-lg-8 col-md-10 mx-auto">
+    <div class="row">
+        {% for post in site.posts %}
+        <div class="col-sm-12 col-lg-6 col-xl-4">
+            <div class="card">
+                <div class="sym_ratio">
+                <a href="{{ post.url }}"
+                   target="_self"
+                   rel="noopener"
+                   class="card-image hover-overlay">
+                    <img src="{{ post.front_img }}"
+                         alt="Cover image"
+                         class="card-img"
+                         style="aspect-ratio: 2.5/1;"></a>
+                </div>
+                <div class="card-text text-break">
+                    <h4><a href="{{ post.url }}"
+                           target="_self"
+                           target="_blank"
+                           rel="noopener"> {{ post.title }}
+                    </a></h4>
+                    {% assign subtitle = post.subtitle | truncate: 290, '...' %}
+
+                    <p style="font-size: 1rem">{{ subtitle }}</p>
+                    {% assign kws = post.keywords | split: "," %}
+                    {% for kw in kws %}
+                        {% if kw != '' %}
+                        <a class="btn btn-outline-secondary my-1 btn-sm"
+                           target="_blank"
+                           style="font-size: 0.7rem"
+                           rel="noopener">{{ kw }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    <a href={{post.github}} target="_blank" rel="noopener" aria-label="github">
+                        <i class="fab fa-github big-icon"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+<!--    <script src="https://gist.github.com/ImScientist/25ddf8405916c77ef3910f65c40bb23b.js"></script>-->
+</div>
+
+<hr>

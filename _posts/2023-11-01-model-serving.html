@@ -1,0 +1,312 @@
+---
+layout:     post
+title:      "Monitor deployed tensorflow models with Prometheus and Grafana"
+date:       2023-11-01 10:00:00 +0200
+front_img:  "assets/blog_content/ml_monitoring/ml_monitoring.png"
+subtitle:   "We provide a minimal example how to serve tensorflow models on a Kubernetes cluster and monitor them with Prometheus and Grafana. To expose the models we create a deployment and service manifests, whereas for the deployment of Prometheus and Grafana we use the helm charts provided by bitnami..."
+keywords:   "Kubernetes,TensorFlow,Prometheus,Grafana"
+github:     "https://github.com/ImScientist/tensorflow-serving"
+permalink:  /posts/ml-serving/
+---
+<p>
+We provide a minimal example how to serve tensorflow models on a Kubernetes cluster and monitor them with
+Prometheus and Grafana. To expose the models we create a deployment and service manifests, whereas for the
+deployment of Prometheus and Grafana we use the corresponding helm charts provided by
+<a href="https://github.com/bitnami/charts">bitnami</a>. We also briefly
+explain the process of transforming a tensorflow model into a servable. The full code can be found in this
+<a href="https://github.com/ImScientist/tensorflow-serving">Github repository</a>.
+</p>
+
+<figure>
+    <img src='/assets/blog_content/ml_monitoring/ml_monitoring.png' alt="image" >
+</figure>
+
+<h3>1. Creating and exposing tf models as REST APIs</h3>
+
+<p>
+To keep things simple we use trivial models, like <code>f(x)=x/2+2</code> but the idea can be applied to any
+subclass of <code>tf.Module</code> that has the <code>.save()</code> method. A minimal example is provided
+below:
+</p>
+
+<script src="https://gist.github.com/ImScientist/54be5f23c598a9ca0b395e11b32c1573.js"></script>
+
+<p>
+In the directory where the model is saved you can find a <code>saved_model.pb</code> file. It stores the
+TensorFlow model, and a set of named signatures, each identifying a function that accepts tensor inputs and
+produces tensor outputs. Whereas tf.Keras models automatically specify serving signatures, for custom modules
+you have to declare them explicitly, as described
+<a href="https://www.tensorflow.org/guide/saved_model#specifying_signatures_during_export">here</a>. To get an
+overview of the available signatures you can use the <code>saved_models_cli</code> in your cli. Usually, you
+will only have and need the <code>serving_default</code> signature. For the example presented above you can
+obtain the inputs and outputs of the <code>serving_default</code> signature with the following command:
+</p>
+
+<script src="https://gist.github.com/ImScientist/99e7202db843b704bcb26dd7282e69ef.js"></script>
+
+<p>
+As a next step, we use the official <code>tensorflow/serving</code>
+<a href="https://hub.docker.com/r/tensorflow/serving">image</a> to expose the saved models as a REST API (you
+can use the same image to make grpc calls against the models but this won’t be covered here). An example, how
+to run the container, mount the saved model (assuming that it is stored in <code>$(pwd)/models</code>), and
+make a REST call is provided below:
+</p>
+
+<script src="https://gist.github.com/ImScientist/7ef3fcda9d970ca0c63ef999c836bdb7.js"></script>
+
+<p>
+In this example we made 3 predictions of <code>f(x)=x/2+2</code> for x=0,1,2. Note that in the POST request we
+had to specify the signature name <code>serving_default</code> and to make the input data compliant with the
+signature definition.
+</p>
+
+<p>
+To serve multiple models we do not only have to mount them in the image but also have to specify a config file
+that maps the model location to a service path. For example, if we have 3 models mounted in the
+<code>/models</code> directory, as described below,
+</p>
+
+<script src="https://gist.github.com/ImScientist/f70d38b3e12137b7fd9ec53857695eee.js"></script>
+
+<p>
+we can use the following configuration (mounted in <code>/models/models.config</code>):
+</p>
+
+<script src="https://gist.github.com/ImScientist/479df553f620da38721d9a6b27de1022.js"></script>
+
+<p>
+You can copy the content in <code>/models</code> from
+<a href="https://github.com/ImScientist/tensorflow-serving/tree/master/models">here</a>. To start the service
+we will use the same <code>tensorflow/serving</code> image but with few extra arguments:
+</p>
+
+<script src="https://gist.github.com/ImScientist/ebd9d85e7c04fafce68f2357e929a6a7.js"></script>
+
+<p>
+<ul>
+  <li>The <code>model_config_file_poll_wait_seconds</code> flag instructs Tensorflow Serving to periodically
+  poll for updated versions of the configuration file specified by the <code>model_config_file</code>
+  flag.
+  <br/><br/>
+  </li>
+
+  <li>The <code>version_labels</code> section of the config file allows us to map different model versions to
+  the same
+  endpoint. In this example, calling the endpoints <code>/half_plus_ten/labels/stable</code> and
+  <code>/half_plus_ten/labels/canary</code> is equivalent to calling <code>/half_plus_ten/versions/1</code>
+  and <code>/half_plus_ten/versions/2</code>, respectively.
+  <br/><br/>
+  </li>
+
+  <li>The <code>allow_version_labels_for_unavailable_models</code> flag allows us to assign a label to a
+  version that is not yet loaded.
+  <br/><br/>
+  </li>
+</ul>
+</p>
+
+<p>
+In this example the following service calls are possible (you can pick each one of the three
+<code>MODEL_PATH</code> by commenting out the other two):
+</p>
+
+<script src="https://gist.github.com/ImScientist/b993452abde754455b1efb2c020e4e56.js"></script>
+
+<h3>2. Kubernetes deployment</h3>
+<p>
+For simplicity, we use a Kubernetes cluster deployed on a local machine. This prevents us, for example,
+to simulate exactly how the new tensorflow models are mounted and served but all other configurations
+presented below can be used for the cloud deployment.
+</p>
+
+<p>
+To reproduce the steps listed below, you need a local Kubernetes installation, like
+<a href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a> or
+<a href="https://rancherdesktop.io/">Rancher Desktop</a>, and the
+<a href="https://helm.sh/docs/intro/install/">helm</a> package manager that automates the deployment of
+software for Kubernetes.
+</p>
+
+<h5>2.1 Tensorflow serving</h5>
+
+<p>
+We create a single deployment that is exposed to the other components in the cluster through a service. In the
+ideal case, the exported models should be made available to the tf-server pods by mounting them as volumes.
+Instead, the pods in the deployment will be running containers that already contain the models. The Dockerfile
+that creates them is given below:
+</p>
+
+<script src="https://gist.github.com/ImScientist/3f905a95cc6d3cce6908c50e2982363d.js"></script>
+
+<p>
+We can create the container, the kubernetes namespace, deployment and service with the following commands:
+</p>
+
+<script src="https://gist.github.com/ImScientist/57f1ca847fb368f719fe2e8dcaf2fcdd.js"></script>
+
+<p>
+where the content of <code>tf-serving.yaml</code> is given below:
+</p>
+
+<script src="https://gist.github.com/ImScientist/418bb9571621a27b7b891d67a1eb4bd1.js"></script>
+
+<p>
+In <a href="https://github.com/ImScientist/tensorflow-serving">this repository</a> you can also find the
+corresponding helm chart. From the yaml file we can see that:
+
+<ul>
+  <li>
+    We are pulling the locally stored tensorflow server image by setting <code>pullPolicy: Never</code>
+    (line 21). This line should be changed if we are using a cluster on the cloud (in addition to pushing the
+    <code>tf-server:1.0.0</code> image to a container registry).
+    <br/><br/>
+  </li>
+
+  <li>
+    We provide a monitoring configuration to the server by using the <code>rest_api_port</code> flag and
+    the <code>monitoring_config_file</code> flag (line 24, 27). The latter flag points to the
+    <code>/models/monitoring.config</code> file that has the following content:
+    <br/><br/>
+
+    <script src="https://gist.github.com/ImScientist/e846b58e122a0e5b33ee60e12d34b30a.js"></script>
+  </li>
+
+  <li>
+  All metrics that can be scraped by Prometheus are accessible at path
+  <code>/monitoring/prometheus/metrics</code> and port 8501. You can see them by browsing to
+  <code>http://localhost:8501/monitoring/prometheus/metrics</code>.
+  <br/><br/>
+  </li>
+
+  <li>
+    We are using a service of type <code>LoadBalancer</code> (line 42). If the service is intended to be used
+    only by other components in the same cluster then we could change the type of the service to
+    <code>ClusterIP</code>. We should be able to make API calls to the service in the same way as we did in
+    the previous section.
+    <br/><br/>
+  </li>
+
+</ul>
+</p>
+
+<h5>2.2 Prometheus</h5>
+
+<p>
+We will use helm to install all Prometheus components. Since it provides us with a working application out of
+the box we do not have change its default settings. We only have to provide the instructions how to discover
+the pods of the Model Server and extract information from them. We can do this by:
+
+<ul>
+  <li>
+    storing the configurations as a secret in the same namespace where Prometheus is deployed and providing
+    the secret name and key to Prometheus.
+    <br/><br/>
+  </li>
+
+  <li>
+    defining the configurations to be managed by the Helm. In this case a change of the configurations
+    requires a new release version.
+    <br/><br/>
+  </li>
+</ul>
+
+
+More information can be found in the official documentation. We will use the second option. The configuration
+that we are using is stored as prometheus_helm.yaml:
+
+</p>
+
+<script src="https://gist.github.com/ImScientist/38fe7640071b852787b9347aebb82dc8.js"></script>
+
+<p>
+It defines a scrape job that looks for pods with the label <code>app: tf-serving</code> (line 13) in the
+<code>tfmodels</code> namespace (line 17) and every 5s it checks for new data by calling
+<code>/monitoring/prometheus/metrics</code> on port 8501. To install all Prometheus components execute:
+</p>
+
+<script src="https://gist.github.com/ImScientist/004c296aa173e64ca174da28c46f97ab.js"></script>
+
+<p>
+You should get a message telling you under which DNS from within the cluster Prometheus can be accessed.
+</p>
+
+<script src="https://gist.github.com/ImScientist/7628a4f8c88169b6b250d39f00bc9a8c.js"></script>
+
+<p>
+To access Prometheus from outside the cluster execute:
+<code>kubectl -n monitoring port-forward svc/<service name> 9090:9090</code> (the service name is obtained
+from the panel above). After few minutes when all Prometheus components are installed you can access the
+Prometheus UI at <code>http://127.0.0.1:9090</code>. You can execute the query
+<code>:tensorflow:serving:request_count</code> and check how the graph changes after making several API calls
+to the tf model service.
+</p>
+
+<figure>
+    <img src='/assets/blog_content/ml_monitoring/prometheus_ui.png' alt="prometheus_ui" >
+</figure>
+
+
+<h5>2.3 Grafana</h3>
+
+<p>
+We will use helm to install Grafana. No additional configurations are required:
+</p>
+
+<script src="https://gist.github.com/ImScientist/15b4f03b6e8ae260caacb8dfb9b9d946.js"></script>
+
+<p>
+You should automatically get the following instructions how to access the Grafana dashboard
+(note that in the panel below the kubectl namespace flag is skipped; you should not skip it):
+</p>
+
+<script src="https://gist.github.com/ImScientist/5b76ebe2548f502cf0f2d6c5e4fc205c.js"></script>
+
+<p>
+To access Grafana from outside the cluster execute
+<code>kubectl -n monitoring port-forward svc/grafana-chart 8080:3000</code> and browse to
+<code>http://127.0.0.1:8080</code> to access the service. You can add Prometheus as a datasource
+by using the previously obtained prometheus DNS name as a datasource URL:
+<code>http://<service name>.monitoring.svc.cluster.local:9090</code>
+</p>
+
+<figure>
+    <img src='/assets/blog_content/ml_monitoring/grafana_ui.png' alt="grafana_ui" >
+</figure>
+
+<p>
+Now you should be able to create your first dashboard by using the metric
+<code>:tensorflow:serving:request_count</code> and Prometheus as a data source.
+</p>
+
+<figure>
+    <img src='/assets/blog_content/ml_monitoring/grafana_dashboard.png' alt="grafana_dashboard" >
+</figure>
+
+<p>
+To remove all components that you have installed execute:
+</p>
+
+<script src="https://gist.github.com/ImScientist/65163dc23bf5385f62d753eb061350e4.js"></script>
+
+<p></p>
+
+<h3>3. References</h3>
+
+<p>
+<ul>
+  <li>
+    <a href="https://www.tensorflow.org/guide/saved_model#specifying_signatures_during_export">
+    Specifying signatures of tf.models during export</a>
+  </li>
+  <li>
+    <a href="https://helm.sh/docs/intro/install/">Helm installation</a>
+  </li>
+  <li>
+    <a href="https://docs.bitnami.com/kubernetes/apps/prometheus-operator/configuration/customize-scrape-configurations/">
+    Prometheus scrape configuration</a>
+  </li>
+  <li>
+    <a href="https://github.com/ImScientist/tensorflow-serving">Source code</a>
+  </li>
+</ul>
+</p>
