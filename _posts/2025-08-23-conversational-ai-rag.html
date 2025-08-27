@@ -22,6 +22,7 @@ permalink:  /posts/conversational-ai-rag/
     <img src='/assets/blog_content/conversational_ai_rag/agents_thumbnail.png' alt="image" >
 </figure>
 
+
 <h3>1. What is RAG and Why Does It Matter?</h3>
 
 <p>
@@ -54,57 +55,55 @@ permalink:  /posts/conversational-ai-rag/
 
 <h3>3. Component Breakdown</h3>
 
-<h5>3.1 Streamlit - The User Interface</h5>
-
-<p>
-    Streamlit serves as the user-facing component of our system, providing a clean and intuitive web interface for interacting with the AI assistant. This Python framework allows developers to create sophisticated web applications without extensive web development knowledge, making it an ideal choice for data science and AI applications.
-</p>
-
-<p>
-    The Streamlit application manages user sessions, displays conversation history, and handles real-time communication with the backend RAG system. Users can type questions naturally, just like they would in any modern chat application, and receive responses that appear instantly in a conversation thread. The interface maintains conversation state across page refreshes and provides visual feedback during processing, creating a smooth user experience that rivals commercial AI chat applications.
-</p>
-
-<p>
-    What makes Streamlit particularly valuable for this project is its simplicity combined with powerful features. Developers can focus on the AI logic rather than wrestling with complex web frameworks, yet still deliver a professional-looking interface that users will find familiar and easy to navigate.
-</p>
-
-<h5>3.2 LangChain & LangGraph - The AI Orchestration</h5>
+<h5>3.1 LangChain & LangGraph - The AI Orchestration</h5>
 
 <p>
     LangChain serves as the foundation for building applications with large language models, while LangGraph extends these capabilities to create stateful, multi-step AI workflows. Together, they form the brain of our RAG system, orchestrating the complex dance between user input, information retrieval, and response generation.
 </p>
 
-<p>
-    The system works by receiving user questions and making intelligent decisions about how to respond. For simple queries that don't require additional context, the system might respond directly using the AI's existing knowledge. However, for questions that would benefit from specific information, LangGraph triggers a search through the vector database to find relevant documents.
-</p>
+<figure>
+    <img src='/assets/blog_content/conversational_ai_rag/langchain_graph_3.png' alt="graph">
+</figure>
 
 <p>
-    Once relevant information is retrieved, LangGraph coordinates the combination of this context with the user's original question and the ongoing conversation history. This orchestration ensures that responses are not only accurate based on the retrieved information but also coherent within the context of the entire conversation thread.
+    The core logic of the graph is described in the figure above. The system works by receiving user questions and making intelligent decisions about how to respond.
+
+    <ul>
+        <li>
+            For simple queries that don't require additional context, the system might respond directly using the AI's existing knowledge (right path).
+        </li>
+        <br>
+        <li>
+            However, for questions that would benefit from specific information, LangGraph may decide to use the tools (left path) that you have provided to gather extra information: for example, that could be a tool that executes online searches or a tool that retrieves relevant documents from an internal database. Once relevant information is retrieved, LangGraph coordinates the combination of this context with the user's original question and the ongoing conversation history, and decides whether to use another tool or to prepare a response. This orchestration ensures that responses are not only accurate based on the retrieved information but also coherent within the context of the entire conversation thread.
+        </li>
+    </ul>
 </p>
+
+<h5>3.2 OpenAI GPT - The Language Model</h5>
 
 <p>
-    The power of LangGraph becomes evident in its ability to create AI agents rather than simple chatbots. These agents can make decisions, use tools, maintain context, and follow complex workflows that adapt based on the nature of each user interaction.
+    The OpenAI GPT model serves as the core intelligence of our system, providing natural language understanding and generation capabilities that make conversations feel human-like and intuitive. The language model performs multiple critical functions within our system.
 </p>
 
-<h5>3.3 OpenAI GPT - The Language Model</h5>
+<ul>
+    <li>
+        First, it analyzes incoming user questions to determine whether additional information retrieval is necessary or if the question can be answered directly from the model's existing knowledge. This decision-making capability prevents unnecessary tool usage and improves response times for simple queries.
+    </li>
+    <br>
+    <li>
+        In addition, when the system retrieves relevant information after using one of the tools, the GPT model synthesizes this information with the conversation context to generate comprehensive, coherent responses.
+    </li>
+</ul>
 
-<p>
-    The OpenAI GPT model serves as the core intelligence of our system, providing natural language understanding and generation capabilities that make conversations feel human-like and intuitive. Specifically, we use GPT-4 Mini, which offers excellent performance while remaining cost-effective for most applications.
-</p>
-
-<p>
-    The language model performs multiple critical functions within our system. First, it analyzes incoming user questions to determine whether additional information retrieval is necessary or if the question can be answered directly from the model's existing knowledge. This decision-making capability prevents unnecessary database searches and improves response times for simple queries.
-</p>
-
-<p>
-    When the system retrieves relevant information from the vector database, the GPT model synthesizes this information with the conversation context to generate comprehensive, coherent responses. The model excels at taking fragmented pieces of retrieved text and weaving them into natural, flowing explanations that directly address the user's question while maintaining the conversational tone established throughout the interaction.
-</p>
-
-<h5>3.4 Milvus - The Vector Database</h5>
+<h5>3.3 Milvus - The Vector Database</h5>
 
 <p>
     Milvus represents a specialized database technology designed specifically for storing and searching through vector embeddings, which are numerical representations of text that capture semantic meaning. This component transforms how we search and retrieve information, moving beyond simple keyword matching to true semantic understanding.
 </p>
+
+<figure>
+    <img src='/assets/blog_content/conversational_ai_rag/vectordb.png' alt="graph">
+</figure>
 
 <p>
     The process begins when documents are processed and split into manageable chunks, typically a few hundred words each. Each chunk is then converted into a high-dimensional vector using OpenAI's embedding model, which captures the semantic meaning of the text in mathematical form. These embeddings are stored in Milvus along with the original text and relevant metadata.
@@ -118,18 +117,20 @@ permalink:  /posts/conversational-ai-rag/
     The sophistication of vector-based search cannot be overstated. Traditional keyword searches often miss relevant information due to variations in terminology, but vector search understands context and meaning, dramatically improving the quality of information retrieval.
 </p>
 
-<h5>3.5 PostgreSQL - The Memory System</h5>
+<h5>3.4 PostgreSQL - The Memory System</h5>
 
 <p>
     PostgreSQL serves as the memory backbone of our conversational AI system, storing conversation history and checkpoints that enable the AI to maintain context across multiple interactions. This database management system ensures that each conversation thread maintains continuity and coherence, regardless of how long the interaction continues.
 </p>
 
 <p>
-    The system implements LangGraph's checkpoint functionality, which saves the complete conversation state after each user interaction. This includes not only the messages exchanged but also any intermediate states, retrieved information, and decision points that occurred during processing. This comprehensive state management allows the AI to reference previous parts of the conversation, build upon earlier topics, and maintain consistent responses throughout extended interactions.
+    The importance of persistent memory in conversational AI cannot be understated. Without proper memory management, each interaction would be isolated, forcing users to repeatedly provide context and preventing the development of more sophisticated, multi-turn conversations that feel natural and productive.
 </p>
 
+<h5>3.5 Streamlit - The User Interface</h5>
+
 <p>
-    The importance of persistent memory in conversational AI cannot be understated. Without proper memory management, each interaction would be isolated, forcing users to repeatedly provide context and preventing the development of more sophisticated, multi-turn conversations that feel natural and productive.
+    Streamlit serves as the user-facing component of our system, providing a clean and intuitive web interface for interacting with the AI assistant. This Python framework allows developers to create sophisticated web applications without extensive web development knowledge, making it an ideal choice for data science and AI applications. The biggest advantage of streamlit is the easy management of different user sessions: you can open two tabs of the same application, start two different conversations, and there will be no information leak between them.
 </p>
 
 <h5>3.6 Kubernetes - The Deployment Platform</h5>
