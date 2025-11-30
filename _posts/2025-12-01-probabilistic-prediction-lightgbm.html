@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Probabilistic Forecasting with Dask-LightGBM"
-date:       2025-12-01 10:00:00 +0200
+date:       2025-11-30 10:00:00 +0200
 front_img:  "assets/blog_content/conversational_ai_rag/agents_thumbnail.png"
 subtitle:   "Master probabilistic forecasting with LightGBM custom loss functions. Train on large datasets using Dask and predict full probability distributions."
 keywords:   "LightGBM,Probability,Dask,Distributed Training"
@@ -10,6 +10,191 @@ permalink:  /posts/probabilistic-prediction-lightgbm/
 ---
 
 <p>
-    In this post we train LightGBM to make probabilistic predictions of a continuous target variable. We cover aspects about the model architecture, model training and evaluation that are specific for probabilistic models: in particular, we explain the reasoning behind the choice of the initial score, custom loss, and objective function. The model will be trained on a large dataset using custom loss and objective functions. To achieve this, we will use LightGBM-Dask on a Kubernetes cluster running in Google Cloud. In the provided Github repository, you can find the code to reproduce all steps: from the creation of the required infrastructure to model training and evaluation.
+    In this post we train LightGBM to make probabilistic predictions of a continuous target variable. We cover aspects
+    about the model architecture, model training and evaluation that are specific for probabilistic models: in
+    particular, we explain the reasoning behind the choice of the initial score, custom loss, and objective function.
+    The model will be trained on a large dataset using custom loss and objective functions. To achieve this, we will use
+    LightGBM-Dask on a Kubernetes cluster running in Google Cloud. In the provided Github repository, you can find the
+    code to reproduce all steps: from the creation of the required infrastructure to model training and evaluation.
 </p>
 
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#introduction">
+            <span class="title">Introduction</span>
+        </a>
+    </li>
+    <li>
+        <a href="#model_architecture">
+            <span class="title">Model Architecture</span>
+        </a>
+        <ul>
+            <li><a href="#model_architecture_1">2.1 Calculating Raw Scores</a></li>
+            <li><a href="#model_architecture_2">2.2 Mapping Raw Scores to Distribution Parameters</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#model_training">
+            <span class="title">Model training</span>
+        </a>
+        <ul>
+            <li><a href="#model_training_1">3.1 Loss function</a></li>
+            <li><a href="#model_training_2">3.2 Estimating Initial Scores</a></li>
+            <li><a href="#model_training_3">3.3 Growing Trees: The Objective Function</a></li>
+            <li><a href="#model_training_4">3.4 Taylor Approximation of the loss function</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#model_evaluation">
+            <span class="title">Model evaluation</span>
+        </a>
+        <ul>
+            <li><a href="#model_evaluation_1">4.1 Calibration plot</a></li>
+            <li><a href="#model_evaluation_2">4.2 Probability integral transform histogram</a></li>
+            <li><a href="#model_evaluation_3">4.3 Relative standard deviation histogram</a></li>
+            <li><a href="#model_evaluation_4">4.4 Continuous ranked probability score (CRPS)</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#dask">
+            <span class="title">Practical Aspects of Model Training with Dask</span>
+        </a>
+        <ul>
+            <li><a href="#dask_1">5.1 Why Dask for Distributed LightGBM Training?</a></li>
+            <li><a href="#dask_2">5.2 Cloud Infrastructure Setup on Google Cloud Platform</a></li>
+            <li><a href="#dask_3">5.3 Dask Deployment on Kubernetes</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#references">
+            <span class="title">References</span>
+        </a>
+    </li>
+
+</ol>
+</p>
+
+
+<h3 id="introduction">1. Introduction</h3>
+
+<p>
+    In many real-world scenarios, we need more than just a single predicted value - we also need to quantify the
+    uncertainty around it. For instance, when predicting a 30-minute trip, we might want to know: "What's the
+    probability that this trip will last between 25 and 35 minutes?" Is it 50%? 80%? 95%? This information is crucial
+    for decision-making.
+</p>
+
+<p>
+    One powerful way to capture this uncertainty for regression problems is to predict an entire probability
+    distribution $\rho$ rather than a single point. The distribution tells us where we expect the forecasted variable to
+    lie,
+    and how certain we are about this expectation. A narrow distribution indicates high certainty; a wide distribution
+    indicates more uncertainty. In this post, we use LightGBM to predict the parameters that fully describe such a
+    distribution.
+</p>
+
+<h5>Problem Setup: Predicting Trip Travel Times</h5>
+
+<p>
+    To make the discussion concrete, we focus on the problem of predicting trip travel times. Since travel times should
+    be positive, we choose the <b>Gamma($\alpha$, $\beta$) distribution</b> to model the uncertainty in our predictions.
+    Our task is to predict both distribution parameters $\alpha$ and $\beta$ (that are positive, as well) as functions
+    of the input features $x$: e.g., distance, time of day, weather conditions, etc.
+</p>
+
+<h3 id="model_architecture">2. Model Architecture: From Inputs to Distribution Parameters</h3>
+
+<p>
+    Our model transforms input features $x$ into distribution parameters $\alpha$ and $\beta$ through a two-step
+    process. First, the
+    gradient boosting model produces two raw scores $a_1(x)$ and $a_2(x)$ for each input $x$. These raw scores are then
+    transformed into the positive distribution parameters $\alpha(x)$ and $\beta(x)$ using a mapping function $g$.
+    Below, we examine each step in detail.
+</p>
+
+<h5 id="model_architecture_1">2.1 Calculating Raw Scores</h5>
+
+<p>
+    For a single input $x$, the gradient boosting algorithm computes raw scores using the standard iterative formula:
+</p>
+
+\begin{align}
+\label{eq:eq001}
+a^{[T]}_j(x) & = a^0_j + \sum^{T}_{t=1} f^{t}_{j}(x)   \hspace{10.0mm} (j=1,2)
+\end{align}
+
+<p>
+    The term on the left-hand side is the raw score for output $j$ after $T$ training iterations. The first term on the
+    right-hand side $(a^0_j)$ is the initial score (constant baseline) for output $j$, estimated before any trees are
+    grown. The $f^t_j$ refer to the contribution from the $t$-th tree to output $j$. In our case,
+    $j \in \{1, 2 \}$ because we need two outputs: one will encode the mean value and the other - the rate parameter of
+    the Gamma distribution.
+</p>
+
+<p>
+    Applying this formula to all $N$ points of the training dataset, gives us $2N$ outputs in total. It's convenient to
+    organize these outputs into a $N \times 2$ matrix $A$, where each row corresponds to one data point, and the
+    first/second column contains all $a_1$, $a_2$ values, respectively. Using matrix notation, the equation becomes:
+</p>
+
+\begin{align}
+A^{[T]}(x) & = A^{0} + \sum^{T}_{t=1} A^{t}(x) \hspace{10.0mm} A^{t} \in R^{N \times 2}
+\end{align}
+
+<p>
+    The term on the left-hand side refers to the matrix of raw scores after $T$ iterations. The first, second column of
+    the initial score $A^0$, is equal to $a^0_1$ and $a^0_2$, respectively. $A^t$ holds the outputs from the $t$-th pair
+    of trees. Row $i$ $(i=1 \ldots N)$ contains the predictions for the $i$-th data point $x_i$. We'll use this matrix
+    notation when deriving the objective function later.
+</p>
+
+
+<h5 id="model_architecture_2">2.2 Mapping Raw Scores to Distribution Parameters</h5>
+
+<p>
+    The raw scores $a_1(x)$ and $a_2(x)$ can be any real numbers (positive or negative). However, the Gamma distribution
+    parameters $\alpha$ and $\beta$ must be strictly positive. Therefore, we apply a transformation $g$ that maps real
+    numbers to positive numbers:
+</p>
+
+
+\begin{align}
+\alpha (x) & =  {\rm softplus}(a_1 (x)) \cdot {\rm softplus}(a_2(x)) \nonumber \\
+\label{eq:g_map}
+\beta (x) & = {\rm softplus}(a_2(x))
+\end{align}
+
+where the softplus is defined as:
+
+\begin{align*}
+{\rm softplus}(x) & = \log \left(1 + e^x \right)
+\end{align*}
+
+<p>
+    The ${\rm softplus}$ function is a smooth approximation of the ReLU function that ensures positive outputs while
+    remaining differentiable everywhere which is essential for gradient-based optimization.
+</p>
+
+<p>
+    The map defined in \eqref{eq:g_map} might seem like an arbitrary choice, but it has important advantages:
+</p>
+
+<ul class="toc-list">
+    <li>
+        Interpretable decomposition: $ {\rm softplus}(a_1) = \alpha / \beta$ represents the mean of the Gamma
+        distribution, and $ {\rm softplus}(a_2) = \beta$ represents the rate parameter (inversely related to the scale
+        parameter).
+    </li>
+    <br>
+    <li>
+        Separation of roles: The first tree $f_1$ learns patterns related to the average travel time, while the second
+        tree $f_2$ learns patterns related to variability. This separation helps the model learn more efficiently.
+    </li>
+</ul>
+
+<p>
+    Alternative mappings are possible: for example, $\alpha = {\rm softplus} (a_1)$, $\beta = {\rm softplus} (a_2)$, but
+    they don't offer the same interpretability and may lead to slower convergence during training.
+</p>
