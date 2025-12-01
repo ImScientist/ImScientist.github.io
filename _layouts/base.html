@@ -39,7 +39,11 @@
         MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
-                tags: 'ams'
+                tags: 'ams',
+                macros: {
+                    // vast: "{ \\bBigg@\{4\} }"
+                    vast: ['\\left\\vert\\vphantom{\\frac{\\displaystyle\\sum}{\\displaystyle\\sum}}\\right.']
+                }
             },
             svg: {
                 fontCache: 'global'
