@@ -1,13 +1,11 @@
 ---
-layout:     post
-title:      "Building a Conversational AI with RAG"
-date:       2025-08-23 10:00:00 +0200
-front_img:  "assets/blog_content/conversational_ai_rag/agents_thumbnail.png"
-subtitle:   "Learn how to build an intelligent conversational AI system that combines RAG with your own documents, deployed on Kubernetes. This guide demonstrates how to create a personal AI assistant with conversation memory using LangGraph, OpenAI GPT, Milvus vector database, and PostgreSQL."
-keywords:   "RAG,Conversational AI,LangChain,LangGraph,Kubernetes,Vector Database"
-github:     "https://github.com/ImScientist/agents"
-permalink:  /posts/conversational-ai-rag/
+layout: post
+title: "Building a Conversational AI with RAG"
+date: 2025-08-23
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/conversational_ai_rag/agents_thumbnail.png"
+excerpt: "Learn how to build an intelligent conversational AI system that combines RAG with your own documents, deployed on Kubernetes. This guide demonstrates how to create a personal AI assistant with conversation memory using LangGraph, OpenAI GPT, Milvus…"
 ---
+
 
 <p>
     Imagine having a personal AI assistant that can answer questions about specific documents or knowledge bases while remembering your entire conversation history. This project demonstrates exactly that by implementing a Retrieval-Augmented Generation (RAG) system deployed on Kubernetes that combines the power of large language models with your own data.
@@ -17,13 +15,53 @@ permalink:  /posts/conversational-ai-rag/
     In this article, we'll explore how this system works by breaking down each component in simple terms. By the end of this guide, you'll understand how to build your own intelligent conversational agent that can work with any type of document or knowledge base. The full code can be found in this <a href="https://github.com/ImScientist/agents">Github repository</a>.
 </p>
 
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#what_is_rag">
+            <span class="title">What is RAG and Why Does It Matter?</span>
+        </a>
+    </li>
+    <li>
+        <a href="#architecture">
+            <span class="title">System Architecture Overview</span>
+        </a>
+    </li>
+    <li>
+        <a href="#components">
+            <span class="title">Component Breakdown</span>
+        </a>
+    </li>
+    <li>
+        <a href="#how_it_works">
+            <span class="title">How Everything Works Together</span>
+        </a>
+    </li>
+    <li>
+        <a href="#getting_started">
+            <span class="title">Getting Started</span>
+        </a>
+    </li>
+    <li>
+        <a href="#advantages">
+            <span class="title">Advantages of This Architecture</span>
+        </a>
+    </li>
+    <li>
+        <a href="#summary">
+            <span class="title">Summary</span>
+        </a>
+    </li>
+    <li>
+        <a href="#rag_resources">
+            <span class="title">Resources</span>
+        </a>
+    </li>
+</ol>
+</p>
 
-<figure>
-    <img src='/assets/blog_content/conversational_ai_rag/agents_thumbnail.png' alt="image" >
-</figure>
-
-
-<h3>1. What is RAG and Why Does It Matter?</h3>
+<h3 id="what_is_rag">1. What is RAG and Why Does It Matter?</h3>
 
 <p>
     Retrieval-Augmented Generation (RAG) is a technique that enhances AI chatbots by giving them access to specific information beyond their training data. Traditional AI models are limited to the information they learned during their training process, which means they can't access real-time information or answer questions about documents they've never seen before.
@@ -37,7 +75,7 @@ permalink:  /posts/conversational-ai-rag/
     The power of RAG lies in its ability to make AI systems more accurate, up-to-date, and relevant to specific use cases. Instead of hallucinating or providing outdated information, the AI can reference actual documents and provide citations for its responses.
 </p>
 
-<h3>2. System Architecture Overview</h3>
+<h3 id="architecture">2. System Architecture Overview</h3>
 
 <p>
     Our RAG system consists of several key components working together in a coordinated workflow. When a user submits a question through the Streamlit web application, the request flows through a LangGraph RAG chain that intelligently decides whether to search the vector database for relevant information. The system then combines any retrieved information with the conversation context stored in PostgreSQL before sending everything to the OpenAI GPT model for final response generation.
@@ -49,11 +87,11 @@ permalink:  /posts/conversational-ai-rag/
 
 
 <figure>
-    <img src='/assets/blog_content/conversational_ai_rag/project_diagram_2.png' alt="image" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/conversational_ai_rag/project_diagram_2.png' alt="image" >
 </figure>
 
 
-<h3>3. Component Breakdown</h3>
+<h3 id="components">3. Component Breakdown</h3>
 
 <h5>3.1 LangChain & LangGraph - The AI Orchestration</h5>
 
@@ -62,7 +100,7 @@ permalink:  /posts/conversational-ai-rag/
 </p>
 
 <figure>
-    <img src='/assets/blog_content/conversational_ai_rag/langchain_graph_3.png' alt="graph">
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/conversational_ai_rag/langchain_graph_3.png' alt="graph">
 </figure>
 
 <p>
@@ -102,7 +140,7 @@ permalink:  /posts/conversational-ai-rag/
 </p>
 
 <figure>
-    <img src='/assets/blog_content/conversational_ai_rag/vectordb.png' alt="graph">
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/conversational_ai_rag/vectordb.png' alt="graph">
 </figure>
 
 <p>
@@ -151,7 +189,7 @@ permalink:  /posts/conversational-ai-rag/
     For organizations planning to scale their RAG systems, Kubernetes provides horizontal scaling capabilities that can automatically add more resources during peak usage periods and scale down during quieter times. This elasticity ensures optimal performance while controlling infrastructure costs.
 </p>
 
-<h3>4. How Everything Works Together</h3>
+<h3 id="how_it_works">4. How Everything Works Together</h3>
 
 <p>
     Understanding the complete workflow helps illustrate how these components create a cohesive, intelligent system. When a user submits a question through the Streamlit interface, the application immediately saves this interaction to the conversation history and forwards the query to the LangGraph workflow engine.
@@ -169,7 +207,7 @@ permalink:  /posts/conversational-ai-rag/
     Throughout this process, every interaction is preserved in PostgreSQL, ensuring that subsequent questions can build upon previous exchanges and maintain conversational continuity. The final response appears in the Streamlit interface, completing the cycle and preparing the system for the next user interaction.
 </p>
 
-<h3>5. Getting Started</h3>
+<h3 id="getting_started">5. Getting Started</h3>
 
 <p>
     The repository provides comprehensive setup instructions that guide users through both local development and production deployment scenarios. For developers wanting to experiment and modify the system, local setup allows running all components on a single machine, making it easy to test changes and understand how the components interact.
@@ -183,7 +221,7 @@ permalink:  /posts/conversational-ai-rag/
     Essential prerequisites include obtaining an OpenAI API key for accessing the language model and embedding services, setting up a Kubernetes cluster for deployment, and basic familiarity with Docker containers and command-line tools. The system requires several environment variables including OPENAI_API_KEY for the language model, POSTGRES_CONN_STRING for database connectivity, and MINIO_URI with MINIO_ACCESS_TOKEN for vector database access.
 </p>
 
-<h3>6. Advantages of This Architecture</h3>
+<h3 id="advantages">6. Advantages of This Architecture</h3>
 
 <p>
     The modular design of this system provides significant advantages for both development and maintenance. Each component can be updated, scaled, or replaced independently without affecting the entire system, making it easier to incorporate new technologies or adapt to changing requirements.
@@ -202,7 +240,7 @@ permalink:  /posts/conversational-ai-rag/
 </p>
 
 
-<h3>Summary</h3>
+<h3 id="summary">7. Summary</h3>
 
 <p>
     This project demonstrates a production-ready approach to building conversational AI systems that seamlessly integrate with existing organizational knowledge. By combining modern AI frameworks, specialized databases, and cloud-native deployment practices, the architecture provides a robust foundation for intelligent applications that can adapt to virtually any domain or use case.
@@ -216,7 +254,7 @@ permalink:  /posts/conversational-ai-rag/
     The future of AI applications is increasingly conversational, contextual, and connected to real-world information. This project provides not just a working implementation but a blueprint for understanding how these technologies can be combined effectively. By exploring the code, experimenting with different data sources, and adapting the system to specific requirements, developers and organizations can build AI applications that truly serve their users' needs while leveraging the full potential of modern artificial intelligence technologies.
 </p>
 
-<h3>Resources</h3>
+<h3 id="rag_resources">8. Resources</h3>
 <p>
     <ul>
         <li>

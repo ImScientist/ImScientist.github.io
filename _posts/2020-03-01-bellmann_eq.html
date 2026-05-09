@@ -1,24 +1,57 @@
 ---
-layout:     post
-title:      "Navigation through a dynamic map using the Bellman equation"
-date:       2020-03-01 10:00:00 +0200
-front_img:  "assets/blog_content/rl/map_walkthrough.gif"
-subtitle:   "We will look at the problem of navigating through a dynamically changing map. It can be represented as a sequence of optimization problems for every time step and in the end, it will reduce to a specific case of the Bellman equation. A solution will be discussed and applied to a particular realization of the problem."
-keywords:   "Reinforcement Learning,Bellmann Equation"
-github:     "https://github.com/ImScientist/Towards-RL"
-permalink:  /posts/bellmann_eq/
+layout: post
+title: "Navigation through a dynamic map using the Bellman equation"
+date: 2020-03-01
+image: "/assets/blog_content/rl/map_walkthrough.gif"
+excerpt: "We will look at the problem of navigating through a dynamically changing map. It can be represented as a sequence of optimization problems for every time step and in the end, it will reduce to a specific case of the Bellman equation. A solution will…"
+mathjax: true
 ---
+
 <p>
 We will look at the problem of navigating through a dynamically changing map. It can be represented as a sequence of optimization problems for every time step and in the end, it will reduce to a specific case of the <a href="https://en.wikipedia.org/wiki/Bellman_equation">Bellman equation</a>. A solution will be discussed and applied to a particular realization of the problem.
 </p>
-<figure>
-    <img src='/assets/blog_content/rl/map_walkthrough.gif' alt="Map wlakthrough" >
-</figure>
+
 <p>
 We will consider a map with impenetrable (dynamic) obstacles like the moving brick walls, the cactus or the animal bones, and points through which you can pass, but it is not preferable to do so (the blue monster). The goal is to reach the treasure as fast as possible.
 </p>
 
-<h3>Definition of a path</h3>
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#definition">
+            <span class="title">Definition of a path</span>
+        </a>
+    </li>
+    <li>
+        <a href="#best_path">
+            <span class="title">Definition of the best path</span>
+        </a>
+    </li>
+    <li>
+        <a href="#solution">
+            <span class="title">Solution of the problem</span>
+        </a>
+    </li>
+    <li>
+        <a href="#sample_solution">
+            <span class="title">Solution for the sample problem</span>
+        </a>
+    </li>
+    <li>
+        <a href="#summary">
+            <span class="title">Summary</span>
+        </a>
+    </li>
+    <li>
+        <a href="#appendix">
+            <span class="title">Appendix</span>
+        </a>
+    </li>
+</ol>
+</p>
+
+<h3 id="definition">1. Definition of a path</h3>
 
 <p>
 To navigate successfully through a map like the one in the figure above for a time period $ [0, T] $ we have to find a set of policies \( \{ \pi_t | t = 0, \ldots T-1 \} \) that will tell us in which direction to move given the time and our position in the map. A possible journey can be described by the sequence of points \( s_0, s_1, \ldots, s_T \) and the corresponding probability to use this sequence is given by:
@@ -57,7 +90,7 @@ $$
 <h5>Example: conditional probability density function</h5>
 
 <figure>
-    <img src='/assets/blog_content/rl/posible_movements.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/rl/posible_movements.png'
      alt="The five possible actions at the point (i, j) = (1, 2)" >
     <figcaption>The five possible actions at the point $(i, j) = (1, 2)$
     </figcaption>
@@ -105,7 +138,7 @@ $$
 The task of finding the most efficient set of policies is equivalent to finding \( \lambda_k(t, s) \) for all \(k\), \(t\), \(s\).
 </p>
 
-<h3>Define the best path</h3>
+<h3 id="best_path">2. Definition of the best path</h3>
 
 <p>
 To find the best path we will assign a score to every path: we introduce rewards at the desired destination and penalties at the forbidden map points, summarized in the function \(R(t, s)\), which are added to the score of a path if we cross or stay at one of these points. The task is to maximize the collected score which can happen if we reach the destination as fast as possible and stay there in order to collect as many times the reward as possible.
@@ -157,7 +190,7 @@ The first term corresponds to the reward that we get at every time step when we 
 the map and the second term corresponds to the penalty that we get when we stay one bin below (the blue monster).
 </p>
 
-<h3>Problem solution</h3>
+<h3 id="solution">3. Solution of the problem</h3>
 
 <p>
 The equation above suggests that we have to optimize all policies simultaneously which seems to be hard.
@@ -219,14 +252,14 @@ We have everything to solve the problem: starting from $t=T-1$ we find $\lambda 
 $s$. This procedure is repeated for $t=T-2, T-3, \ldots 0$.
 </p>
 
-<h3>Solution for a sample problem</h3>
+<h3 id="sample_solution">4. Solution for the sample problem</h3>
 
 <p>
 In our example the impenetrable points are moving and have 3 distinct states that repeat in the same order.
 </p>
 
 <figure>
-    <img src='/assets/blog_content/rl/map_no_action.gif' alt="Full map" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/rl/map_no_action.gif' alt="Full map" >
     <figcaption>Map created with Tiled</figcaption>
 </figure>
 
@@ -240,15 +273,15 @@ of $ \rho_k $.
 </p>
 
 <figure>
-    <img src='/assets/blog_content/rl/probs_0.png' alt="Full map" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/rl/probs_0.png' alt="Full map" >
     <figcaption>Best actions for $t=0, 3, 6, \ldots $ </figcaption>
 </figure>
 <figure>
-    <img src='/assets/blog_content/rl/probs_1.png' alt="Full map" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/rl/probs_1.png' alt="Full map" >
     <figcaption>Best actions for $t=1, 4, 7, \ldots $ </figcaption>
 </figure>
 <figure>
-    <img src='/assets/blog_content/rl/probs_2.png' alt="Full map" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/rl/probs_2.png' alt="Full map" >
     <figcaption>Best actions for $t=2, 5, 8, \ldots $ </figcaption>
 </figure>
 
@@ -265,12 +298,12 @@ There are two interesting conclusions that can be drawn from the figures above:
 </ul>
 </p>
 
-<h3>Summary</h3>
+<h3 id="summary">5. Summary</h3>
 <p>
 The presented map navigation problem was solved by assuming that the decision to which state to move depends only on the current state which allowed us to derive a sequence of simple optimization subproblems for every time step. These problems were a specific case of the Bellman equation and were solved by using a L-BFGS-B algorithm/gradient ascent method. The proposed solution does not allow a person to learn a strategy how to navigate through another unknown map or to handle unexpected events. Fortunately, there are other approaches to tackle this problem which could be discussed in detail in another article.
 </p>
 
-<h3>Appendix</h3>
+<h3 id="appendix">6. Appendix</h3>
 
 <h5>Impenetrable points</h5>
 

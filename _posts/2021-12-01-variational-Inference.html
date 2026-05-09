@@ -1,13 +1,12 @@
 ---
-layout:     post
-title:      "Variational inference in probabilistic models: an analytically solvable example"
-date:       2021-12-01 10:00:00 +0200
-front_img:  "assets/blog_content/variational_inference_p1/thumbnail.jpg"
-subtitle:   "The Bayesian inference approach gives us the opportunity to systematically combine and update our prior beliefs about the model parameters with new evidence. In the case where the prior and posterior are conjugate distributions, we can find either an exact analytic or a numerically inexpensive solution for the model parameters. In the more general cases, we must resort to the flexible but computationally intensive Markov chain Monte Carlo (MCMC) methods. Somewhere in between, we find the variational inference approaches, where we approximate the posterior with an easier-to-handle distribution that, depending on the choice, can still preserve some of the correlations between the model parameters."
-keywords:   "Variational Inference,Bayesian Modeling"
-github:     "https://github.com/ImScientist/ilovetfp"
-permalink:  /posts/variational_inference/
+layout: post
+title: "Variational inference in probabilistic models: an analytically solvable example"
+date: 2021-12-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/variational_inference_p1/thumbnail.jpg"
+excerpt: "The Bayesian inference approach gives us the opportunity to systematically combine and update our prior beliefs about the model parameters with new evidence. In the case where the prior and posterior are conjugate distributions, we can find either…"
+mathjax: true
 ---
+
 <p>
 The Bayesian inference approach gives us the opportunity to systematically combine and
 update our prior beliefs about the model parameters with new evidence. In the case where
@@ -29,7 +28,33 @@ source code</a>), we will use the <a href="https://www.tensorflow.org/probabilit
 Probability</a> library.
 </p>
 
-<h3>1. Variational inference approach</h3>
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#variational_inference">
+            <span class="title">Variational inference approach</span>
+        </a>
+    </li>
+    <li>
+        <a href="#example">
+            <span class="title">Example</span>
+        </a>
+    </li>
+    <li>
+        <a href="#final_remarks">
+            <span class="title">Final remarks</span>
+        </a>
+    </li>
+    <li>
+        <a href="#resources">
+            <span class="title">Resources</span>
+        </a>
+    </li>
+</ol>
+</p>
+
+<h3 id="variational_inference">1. Variational inference approach</h3>
 
 <p>
 We are interested in the posterior distribution p of the parameters $\{ \omega_m \vert m =1, \ldots M  \} $
@@ -166,7 +191,7 @@ which is the cross-entropy loss that is weighted with the posterior distribution
 $q(\omega, \theta)$.
 </p>
 
-<h3>2. Example</h3>
+<h3 id="example">2. Example</h3>
 
 <p>
 We will look at an analytically solvable problem that will allow us to compare
@@ -257,7 +282,7 @@ number of data points. The complete source code can be found
 </p>
 
 <figure>
-    <img src='/assets/blog_content/variational_inference_p1/results.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/variational_inference_p1/results.png'
      alt="Posterior distributions" >
     <figcaption>Posterior distributions of the growth rate $\omega$ obtained after 2, 3, 10, and
     100 measurements. The surrogate posterior $q$ used in the variational inference approach
@@ -273,7 +298,7 @@ deviation of the posterior $p(\omega |Y, X)$.
 </p>
 
 <figure>
-    <img src='/assets/blog_content/variational_inference_p1/results_lognormal.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/variational_inference_p1/results_lognormal.png'
      alt="Posterior distributions" >
     <figcaption> distributions of the growth rate $\omega$ obtained after 2, 3, 10, and
     100 measurements. The surrogate posterior used in the variational inference approach
@@ -281,7 +306,7 @@ deviation of the posterior $p(\omega |Y, X)$.
     </figcaption>
 </figure>
 
-<h3>3. Final remarks</h3>
+<h3 id="final_remarks">3. Final remarks</h3>
 
 <p>
 In the current example, we have only estimated the growth rate $\omega$, but we
@@ -291,7 +316,7 @@ the same tree can be properly accounted for by the Tensorflow STS library,
 which could be demonstrated in a future post.
 </p>
 
-<h3>4. Resources</h3>
+<h3 id="resources">4. Resources</h3>
 
 <ul>
   <li>

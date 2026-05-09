@@ -1,16 +1,12 @@
 ---
-layout:     post
-title:      "Track the model performance metrics in Federated training"
-date:       2020-05-01 10:00:00 +0200
-front_img:  "assets/blog_content/federated_learning/roc-auc.png"
-subtitle:   "Federated learning is a machine learning technique that trains a model across multiple decentralized devices, each of them holding a local data sample, without exchanging these data samples. Let’s imagine that by using this technique you have trained a binary classification model. You want to test it on the data of several devices by calculating the model ROC-AUC score on each one of them and then by averaging the results. The following questions arise"
-keywords:   "Federated Learning"
-github:     "https://gist.github.com/ImScientist/764484ef4a04cd40e6512c078e869d0e"
-permalink:  /posts/federated_training/
+layout: post
+title: "Track the model performance metrics in Federated training"
+date: 2020-05-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/roc-auc.png"
+excerpt: "Federated learning is a machine learning technique that trains a model across multiple decentralized devices, each of them holding a local data sample, without exchanging these data samples. Let’s imagine that by using this technique you have…"
+mathjax: true
 ---
-<figure>
-    <img src='/assets/blog_content/federated_learning/roc-auc.png' alt="roc-auc equation" >
-</figure>
+
 <p>
 Federated learning is a machine learning technique that trains a model across multiple decentralized devices, each of them holding a local data sample, without exchanging these data samples. Let’s imagine that by using this technique you have trained a binary classification model. You want to test it on the data of several devices by calculating the model <a href="https://en.wikipedia.org/wiki/Bellman_equation">ROC-AUC</a> score on each one of them and then by averaging the results. The following questions arise:
 
@@ -26,10 +22,41 @@ Federated learning is a machine learning technique that trains a model across mu
 In this article, we will address these questions by doing an analytical case study supported by numerical examples and interactive visualizations.
 </p>
 
-<h3>Motivation: Federated learning</h3>
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#motivation">
+            <span class="title">Motivation: Federated learning</span>
+        </a>
+    </li>
+    <li>
+        <a href="#roc_auc_definition">
+            <span class="title">ROC-AUC definition</span>
+        </a>
+    </li>
+    <li>
+        <a href="#roc_auc_federated">
+            <span class="title">ROC-AUC in the federated learning mode</span>
+        </a>
+    </li>
+    <li>
+        <a href="#summary">
+            <span class="title">Summary</span>
+        </a>
+    </li>
+    <li>
+        <a href="#resources">
+            <span class="title">Resources</span>
+        </a>
+    </li>
+</ol>
+</p>
+
+<h3 id="motivation">Motivation: Federated learning</h3>
 
 <figure>
-    <img src='/assets/blog_content/federated_learning/federated_learning_vis.gif'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/federated_learning_vis.gif'
      alt="rac-auc example" >
     <figcaption>Federated learning architecture (<a href="http://vision.cloudera.com/wp-content/uploads/2018/11/2018-10-31-181344-federated_learning_animated_labeled.gif">source</a>).
     </figcaption>
@@ -71,7 +98,7 @@ $$
 where we have split the data $D$ into $M$ subsets.
 </p>
 
-<h3>ROC-AUC definition</h3>
+<h3 id="roc_auc_definition">ROC-AUC definition</h3>
 
 <p>
 We will consider the case of having a binary classification problem. A data set composed of features
@@ -100,7 +127,7 @@ belong to the positive class $(y=1)$ and to the negative class $(y=0)$, respecti
 </p>
 
 <figure>
-    <img src='/assets/blog_content/federated_learning/distributions.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/distributions.png'
      alt="Distributions predicted scores for the members of the positive and of the negative class" >
     <figcaption>Possible scores distribution of the elements belonging to the positive class $(f_{+})$, and to the negative class $(f_{-})$. All predictions that are on the right side of the threshold $T$ will be classified by the trained model as members of the positive class.
     </figcaption>
@@ -122,7 +149,7 @@ $$
 </p>
 
 <figure>
-    <img src='/assets/blog_content/federated_learning/roc-auc_example.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/roc-auc_example.png'
      alt="rac-auc example" >
     <figcaption>Typical ROC curve of a trained model (red solid line). The ROC-AUC score is equal to the area under the curve. It is equal to 1 for a perfect classification model and to 0.5 for a model that randomly guesses the target value (area under the red dashed line).
     </figcaption>
@@ -140,7 +167,7 @@ $$
 where ${\rm FPR}'(\xi)$ refers to the derivative of ${\rm FPR}(\xi)$ with respect to $\xi$. This equation will be used to explain some of the differences between the ROC-AUC score and the proposed averaged ROC-AUC score in federated learning mode.
 </p>
 
-<h3>ROC-AUC in the federated learning mode</h3>
+<h3 id="roc_auc_federated">ROC-AUC in the federated learning mode</h3>
 
 <p>
 As already mentioned in the Motivation: Federated learning section, we will look at  \eqref{eq:roc_auc_inequality} for the case where the metric $A$ is equal to the ROC-AUC score, i.e:
@@ -205,7 +232,7 @@ $$
 are approximately the same and normally distributed with mean $\mu_{-}, \mu_{+}$, and standard deviation $\sigma_{-}$, $\sigma_{+}$, as shown in the figure below. Such a situation can be achieved if the data is identically distributed among all devices.
 
 <figure>
-    <img src='/assets/blog_content/federated_learning/scores_fm_fp_similar.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/scores_fm_fp_similar.png'
      alt="scores fm fp similar" >
 </figure>
 In this particular case the ROC-AUC scores of the four devices are:
@@ -294,7 +321,7 @@ i.e. it is equal to the ROC-AUC score of the entire data set. If the number of e
 To illustrate this we can use again the same example with 4 devices that we have used in the previous section. We use the same data which in this case is distributed among the devices in a way that only the data points belonging to the negative class are identically distributed among all devices.
 
 <figure>
-    <img src='/assets/blog_content/federated_learning/scores_fm_similar.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/scores_fm_similar.png'
      alt="scores fm similar" >
 </figure>
 
@@ -357,7 +384,7 @@ In the case of having the same number of elements from the positive class $I_{+m
 To illustrate this, we can use again the same example with 4 devices that we have used in the previous section. We use the same data which in this case is distributed among the devices in a way that only the data points belonging to the positive class are identically distributed among all devices.
 
 <figure>
-    <img src='/assets/blog_content/federated_learning/scores_fp_similar.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/federated_learning/scores_fp_similar.png'
      alt="scores fm similar" >
 </figure>
 
@@ -393,7 +420,7 @@ You can use the interactive chart below to experiment with different degrees of 
 In this case, we cannot expect that equation \eqref{eq:A_roc_equality} will be fulfilled. In our numerical example, we indeed see that both sides of \eqref{eq:A_roc_equality} are not equal if $f_{+}$ and $f_{-}$ are different among the devices.
 </p>
 
-<h3>Summary</h3>
+<h3 id="summary">Summary</h3>
 
 <p>
 In this article, we have looked at how a weighted average of ROC-AUC scores among multiple devices, each of them holding a local data set, changes in comparison to the case of calculating the ROC-AUC score of the complete data set on a single device. A sufficient condition for equivalence of both metrics is that either the distribution of the positive or of the negative scores among all devices is identical.
@@ -404,7 +431,7 @@ This work was done within the scope of the <a href="https://polypoly.org/en-gb/"
 project.
 </p>
 
-<h3>Resources</h3>
+<h3 id="resources">Resources</h3>
     <ul>
         <li>
             <a href="https://gist.github.com/ImScientist/764484ef4a04cd40e6512c078e869d0e">

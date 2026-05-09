@@ -1,14 +1,12 @@
 ---
-layout:     post
-title:      "Probabilistic Forecasting with LightGBM and Dask"
-date:       2025-11-30 10:00:00 +0200
-front_img:  "assets/blog_content/probabilistic_prediction_lightgbm/Logo_lightgbm_12.png"
-subtitle:   "Use LightGBM to make probabilistic predictions of a continuous variable. We cover aspects
-    about the model architecture, training and evaluation that are specific for probabilistic models: the reasoning behind the choice of the initial score, custom loss, and objective function."
-keywords:   "LightGBM,Probability,Dask,Distributed Training"
-github:     "https://github.com/ImScientist/probabilistic-forecasting-travel-time-lightgbm"
-permalink:  /posts/probabilistic-prediction-lightgbm/
+layout: post
+title: "Probabilistic Forecasting with LightGBM and Dask"
+date: 2025-11-30
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/probabilistic_prediction_lightgbm/Logo_lightgbm_12.png"
+excerpt: "Use LightGBM to make probabilistic predictions of a continuous variable. We cover aspects about the model architecture, training and evaluation that are specific for probabilistic models: the reasoning behind the choice of the initial score, custom…"
+mathjax: true
 ---
+
 
 <p>
     In this post we train LightGBM to make probabilistic predictions of a continuous target variable. We cover aspects
@@ -253,7 +251,7 @@ L & = \sum^{N}_{i=1} l_i = \sum^{N}_{i=1} - \log\left[ \rho \left(y_i | \alpha(x
     </li>
 
     <figure>
-        <img src='/assets/blog_content/probabilistic_prediction_lightgbm/featureless_model_fit.png'
+        <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/probabilistic_prediction_lightgbm/featureless_model_fit.png'
              alt="Fit featureless model">
         <figcaption>Gamma probability distribution function $\rho(y | \alpha_0, \beta_0)$ with parameters $\alpha_0$,
             $\beta_0$ obtained by applying the maximum likelihood estimation method on the observed values of the target
@@ -362,7 +360,7 @@ L & = \sum^{N}_{i=1} l_i = \sum^{N}_{i=1} - \log\left[ \rho \left(y_i | \alpha(x
 </p>
 
 <figure>
-    <img src='/assets/blog_content/probabilistic_prediction_lightgbm/calibration_plot.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/probabilistic_prediction_lightgbm/calibration_plot.png'
          alt="Calibration plot">
     <figcaption>Calibration plot (left) and the corresponding Probability integral transform histogram (right) for three
         different types of models
@@ -400,7 +398,7 @@ L & = \sum^{N}_{i=1} l_i = \sum^{N}_{i=1} - \log\left[ \rho \left(y_i | \alpha(x
 </p>
 
 <figure>
-    <img src='/assets/blog_content/probabilistic_prediction_lightgbm/calibration_plot_trained_model.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/probabilistic_prediction_lightgbm/calibration_plot_trained_model.png'
          alt="Calibration plot trained model">
     <figcaption>Calibration plot (left) and the corresponding Probability integral transform histogram (right) for a
         LightGBM model trained on the NYC taxi trip dataset.
@@ -427,7 +425,7 @@ L & = \sum^{N}_{i=1} l_i = \sum^{N}_{i=1} - \log\left[ \rho \left(y_i | \alpha(x
 </p>
 
 <figure>
-    <img src='/assets/blog_content/probabilistic_prediction_lightgbm/rel_std_trained_model_vs_0trees.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/probabilistic_prediction_lightgbm/rel_std_trained_model_vs_0trees.png'
          alt="Relative std">
     <figcaption>Histogram of relative standard deviations of predicted trip travel time distributions. The distributions
         are parametrized by a Gamma probability distribution function $\rho(y|\alpha, \beta)$ and the parameters
@@ -441,7 +439,7 @@ L & = \sum^{N}_{i=1} l_i = \sum^{N}_{i=1} - \log\left[ \rho \left(y_i | \alpha(x
 
 
 <figure>
-    <img src='/assets/blog_content/probabilistic_prediction_lightgbm/crps_example.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/probabilistic_prediction_lightgbm/crps_example.png'
          alt="CRPS example">
     <figcaption>Illustration of the CRPS for an observation $y=4.5$ and a predicted Gamma distribution with $(\alpha,
         \beta) = (4, 1)$.

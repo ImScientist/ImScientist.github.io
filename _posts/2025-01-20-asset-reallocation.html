@@ -1,13 +1,12 @@
 ---
-layout:     post
-title:      "Optimal asset reallocation strategies"
-date:       2025-01-20 10:00:00 +0200
-front_img:  "assets/blog_content/asset_reallocation/thumbnail.jpg"
-subtitle:   "Investigate strategies for reallocating investments from a risk-free asset class to a risky class. This article uses stochastic modeling, including Geometric Brownian motion, to analyze portfolio growth, balancing returns and volatility."
-keywords:   "Stochastic Process,Risk Analysis,Portfolio Management"
-github:     "https://gist.github.com/ImScientist/91f0f2084effd9df97db576c05d4c8f1"
-permalink:  /posts/asset_reallocation/
+layout: post
+title: "Optimal asset reallocation strategies"
+date: 2025-01-20
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/asset_reallocation/thumbnail.jpg"
+excerpt: "Investigate strategies for reallocating investments from a risk-free asset class to a risky class. This article uses stochastic modeling, including Geometric Brownian motion, to analyze portfolio growth, balancing returns and volatility."
+mathjax: true
 ---
+
 
 <p>
     We investigate optimal strategies for reallocating investments from a risk-free asset class $B$ to a risky asset
@@ -18,10 +17,6 @@ permalink:  /posts/asset_reallocation/
     <a href="https://gist.github.com/ImScientist/91f0f2084effd9df97db576c05d4c8f1">GitHub Gist</a> and
     <a href="https://colab.research.google.com/drive/1xTyq81cZpvRJt22_xqsxjwHG_20LZbn2?usp=sharing">Colab Notebook</a>.
 </p>
-
-<figure>
-    <img src='/assets/blog_content/asset_reallocation/thumbnail.jpg' alt="image">
-</figure>
 
 <h3>1. Problem description</h3>
 
@@ -38,7 +33,7 @@ permalink:  /posts/asset_reallocation/
 </p>
 
 <figure>
-    <img src='/assets/blog_content/asset_reallocation/allocation_process.jpg' alt="image">
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/asset_reallocation/allocation_process.jpg' alt="image">
 </figure>
 
 <p>
@@ -104,7 +99,7 @@ S_t &= S_0 \, \exp( (\mu - \sigma^2/2) \, t + \sigma \, W_t)
 </p>
 
 <figure>
-    <img src='/assets/blog_content/asset_reallocation/process_time_evolution.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/asset_reallocation/process_time_evolution.png'
          alt="Trajectories of a stochastic process">
     <figcaption> Time evolution of multiple samples of $S_t$. The solid blue line is obtained from the mean of the
         sampled trajectories.
@@ -175,7 +170,7 @@ G &  = \sum^{N}_{n=0} \alpha_n   \frac{ B(n/N) }{ B(0) }  \frac{ S(1) }{ S(n/N )
 </p>
 
 <figure>
-    <img src='/assets/blog_content/asset_reallocation/portfolio_growth_uniform_alloc_4dim.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/asset_reallocation/portfolio_growth_uniform_alloc_4dim.png'
          alt="Trajectories of a stochastic process">
     <figcaption>
         Distribution of the relative growth $G$ after one year for the strategy $\alpha = [1/4, 1/4, 1/4, 1/4]$. The
@@ -198,7 +193,7 @@ G &  = \sum^{N}_{n=0} \alpha_n   \frac{ B(n/N) }{ B(0) }  \frac{ S(1) }{ S(n/N )
 </p>
 
 <figure>
-    <img src='/assets/blog_content/asset_reallocation/portfolio_growth_4dim_strategies.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/asset_reallocation/portfolio_growth_4dim_strategies.png'
          alt="Trajectories of a stochastic process">
     <figcaption>
         Left: Compare the std with the mean of the relative growth $G$ for different 4-step reallocation strategies.
