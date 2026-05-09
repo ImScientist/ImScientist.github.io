@@ -1,13 +1,11 @@
 ---
-layout:     post
-title:      "Monitor deployed tensorflow models with Prometheus and Grafana"
-date:       2023-11-01 10:00:00 +0200
-front_img:  "assets/blog_content/ml_monitoring/ml_monitoring.png"
-subtitle:   "We provide a minimal example how to serve tensorflow models on a Kubernetes cluster and monitor them with Prometheus and Grafana. To expose the models we create a deployment and service manifests, whereas for the deployment of Prometheus and Grafana we use the helm charts provided by bitnami..."
-keywords:   "Kubernetes,TensorFlow,Prometheus,Grafana"
-github:     "https://github.com/ImScientist/tensorflow-serving"
-permalink:  /posts/ml-serving/
+layout: post
+title: "Monitor deployed tensorflow models with Prometheus and Grafana"
+date: 2023-11-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ml_monitoring/ml_monitoring.png"
+excerpt: "We provide a minimal example how to serve tensorflow models on a Kubernetes cluster and monitor them with Prometheus and Grafana. To expose the models we create a deployment and service manifests, whereas for the deployment of Prometheus and Grafana…"
 ---
+
 <p>
 We provide a minimal example how to serve tensorflow models on a Kubernetes cluster and monitor them with
 Prometheus and Grafana. To expose the models we create a deployment and service manifests, whereas for the
@@ -17,11 +15,33 @@ explain the process of transforming a tensorflow model into a servable. The full
 <a href="https://github.com/ImScientist/tensorflow-serving">Github repository</a>.
 </p>
 
-<figure>
-    <img src='/assets/blog_content/ml_monitoring/ml_monitoring.png' alt="image" >
-</figure>
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#creating_models">
+            <span class="title">Creating and exposing tf models as REST APIs</span>
+        </a>
+    </li>
+    <li>
+        <a href="#kubernetes">
+            <span class="title">Kubernetes deployment</span>
+        </a>
+        <ul>
+            <li><a href="#k8s_tf_serving">2.1 Tensorflow serving</a></li>
+            <li><a href="#k8s_prometheus">2.2 Prometheus</a></li>
+            <li><a href="#k8s_grafana">2.3 Grafana</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#references">
+            <span class="title">References</span>
+        </a>
+    </li>
+</ol>
+</p>
 
-<h3>1. Creating and exposing tf models as REST APIs</h3>
+<h3 id="creating_models">1. Creating and exposing tf models as REST APIs</h3>
 
 <p>
 To keep things simple we use trivial models, like <code>f(x)=x/2+2</code> but the idea can be applied to any
@@ -112,7 +132,7 @@ In this example the following service calls are possible (you can pick each one 
 
 <script src="https://gist.github.com/ImScientist/b993452abde754455b1efb2c020e4e56.js"></script>
 
-<h3>2. Kubernetes deployment</h3>
+<h3 id="kubernetes">2. Kubernetes deployment</h3>
 <p>
 For simplicity, we use a Kubernetes cluster deployed on a local machine. This prevents us, for example,
 to simulate exactly how the new tensorflow models are mounted and served but all other configurations
@@ -127,7 +147,7 @@ To reproduce the steps listed below, you need a local Kubernetes installation, l
 software for Kubernetes.
 </p>
 
-<h5>2.1 Tensorflow serving</h5>
+<h5 id="k8s_tf_serving">2.1 Tensorflow serving</h5>
 
 <p>
 We create a single deployment that is exposed to the other components in the cluster through a service. In the
@@ -189,7 +209,7 @@ corresponding helm chart. From the yaml file we can see that:
 </ul>
 </p>
 
-<h5>2.2 Prometheus</h5>
+<h5 id="k8s_prometheus">2.2 Prometheus</h5>
 
 <p>
 We will use helm to install all Prometheus components. Since it provides us with a working application out of
@@ -242,11 +262,11 @@ to the tf model service.
 </p>
 
 <figure>
-    <img src='/assets/blog_content/ml_monitoring/prometheus_ui.png' alt="prometheus_ui" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ml_monitoring/prometheus_ui.png' alt="prometheus_ui" >
 </figure>
 
 
-<h5>2.3 Grafana</h3>
+<h5 id="k8s_grafana">2.3 Grafana</h5>
 
 <p>
 We will use helm to install Grafana. No additional configurations are required:
@@ -270,7 +290,7 @@ by using the previously obtained prometheus DNS name as a datasource URL:
 </p>
 
 <figure>
-    <img src='/assets/blog_content/ml_monitoring/grafana_ui.png' alt="grafana_ui" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ml_monitoring/grafana_ui.png' alt="grafana_ui" >
 </figure>
 
 <p>
@@ -279,7 +299,7 @@ Now you should be able to create your first dashboard by using the metric
 </p>
 
 <figure>
-    <img src='/assets/blog_content/ml_monitoring/grafana_dashboard.png' alt="grafana_dashboard" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ml_monitoring/grafana_dashboard.png' alt="grafana_dashboard" >
 </figure>
 
 <p>
@@ -290,7 +310,7 @@ To remove all components that you have installed execute:
 
 <p></p>
 
-<h3>3. References</h3>
+<h3 id="references">3. References</h3>
 
 <p>
 <ul>

@@ -1,0 +1,11 @@
+---
+layout: default
+---
+<script src="{{ '/assets/js/hearts.js' | relative_url }}"></script>
+<div class="container">
+  <div class="post-grid">
+    {% for post in site.posts %}
+      {% include post_tile.html post=post %}
+    {% endfor %}
+  </div>
+</div>

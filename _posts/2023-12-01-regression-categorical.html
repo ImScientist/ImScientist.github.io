@@ -1,13 +1,12 @@
 ---
-layout:     post
-title:      "Efficient Likelihood Function Reparametrization for Regression against Categorical Variables"
-date:       2023-12-01 10:00:00 +0200
-front_img:  "assets/blog_content/regression_likelihood/cover.png"
-subtitle:   "We simplify the likelihood function obtained when regressing on categorical variables. This speeds up the variational inference implementation in tensorflow."
-keywords:   "Bayesian Statistics,Tensorflow Probability"
-github:     "https://github.com/ImScientist/ilovetfp"
-permalink:  /posts/regression_categorical/
+layout: post
+title: "Efficient Likelihood Function Reparametrization for Regression against Categorical Variables"
+date: 2023-12-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/regression_likelihood/cover.png"
+excerpt: "We simplify the likelihood function obtained when regressing on categorical variables. This speeds up the variational inference implementation in tensorflow."
+mathjax: true
 ---
+
 <h3>Table of Contents</h3>
 <p>
 <ol class="toc-list">
@@ -51,10 +50,6 @@ dedicated <a href="https://github.com/ImScientist/ilovetfp">Github repository</a
 Colab notebook</a>.
 </p>
 
-<figure>
-    <img src='/assets/blog_content/regression_likelihood/cover.png' alt="image" >
-</figure>
-
 <h3 id="problem_definition">1. Problem definition</h3>
 
 <p>
@@ -89,7 +84,7 @@ refer to the figure below.
 </p>
 
 <figure>
-    <img src='/assets/blog_content/regression_likelihood/pgm.png' alt="graphical model" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/regression_likelihood/pgm.png' alt="graphical model" >
     <figcaption>The Probabilistic graphical model of our problem</figcaption>
 </figure>
 
@@ -198,7 +193,7 @@ standard deviation). The figure below provides a sample of the generated data:
 </p>
 
 <figure>
-    <img src='/assets/blog_content/regression_likelihood/data_sample.png' alt="data sample" >
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/regression_likelihood/data_sample.png' alt="data sample" >
     <figcaption>Data samples (left) and target mean and standard deviation for all groups (right)</figcaption>
 </figure>
 

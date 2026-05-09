@@ -1,13 +1,12 @@
 ---
-layout:     post
-title:      "Ad auction bidding strategy"
-date:       2020-09-01 10:00:00 +0200
-front_img:  "assets/blog_content/ad_auction/ad_auction.png"
-subtitle:   "Real-Time Bidding (RTB) has become a relevant paradigm in display advertising. It mimics stock exchanges and utilizes computer algorithms to buy and sell ads in real-time automatically. Imagine that you have to participate in $N >> 1$ of those online ad auctions with a limited bidding budget. The task is to create such a bidding strategy that you can win some of them, and that the placed ads generate at least $N_C$ clicks. That should be done by spending as little money as possible. In the following, we will look at a possible solution to this problem."
-keywords:   "Bidding Optimization"
-github:     "https://github.com/ImScientist/auction-bidding-strategy"
-permalink:  /posts/ad_auction_bidding_strategy/
+layout: post
+title: "Ad auction bidding strategy"
+date: 2020-09-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ad_auction/ad_auction.png"
+excerpt: "Real-Time Bidding (RTB) has become a relevant paradigm in display advertising. It mimics stock exchanges and utilizes computer algorithms to buy and sell ads in real-time automatically. Imagine that you have to participate in $N >> 1$ of those…"
+mathjax: true
 ---
+
 <p>
 Real-Time Bidding (RTB) has become a relevant paradigm in display advertising. It mimics stock exchanges and utilizes computer algorithms to buy and sell ads in real-time automatically. Imagine that you have to participate in $N \gg 1$ of those online ad auctions with a limited bidding budget. The task is to create such a bidding strategy that you can win some of them, and that the placed ads generate at least $N_C$ clicks. That should be done by spending as little money as possible. In the following, we will look at a possible solution to this problem.
 </p>
@@ -15,14 +14,6 @@ Real-Time Bidding (RTB) has become a relevant paradigm in display advertising. I
 <h3>1. Real-Time Bidding ecosystem</h3>
 
 <p>
-
-<figure>
-    <img src='/assets/blog_content/ad_auction/ad_auction.png'
-     alt="Ad auction schema" >
-    <figcaption>Illustration of a Real-time bidding ecosystem. The schema is taken from [1].
-    </figcaption>
-</figure>
-
 A brief description of the RTB ecosystem is given in the figure above. When a user visits an ad-supported site each ad placement will trigger an auction. Bid requests will be sent via the ad exchange to the different bidding agents. Upon receiving a bid request, every bidding agent calculates a bid that is sent together with an ad to the Ad exchange. Finally, the winner’s ad will be shown to the visitor along with the regular content of the website. The whole process should be completed within a fraction of the second. A more detailed introduction to RTB could be found in [1,2].
 </p>
 
@@ -30,7 +21,7 @@ A brief description of the RTB ecosystem is given in the figure above. When a us
 
 <p>
 <figure>
-<img src='/assets/blog_content/ad_auction/winning_bid_distribution.png'
+<img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ad_auction/winning_bid_distribution.png'
  alt="Winning bid distribution" >
 <figcaption>Winning bid distribution of an auction. The probability to win the auction by placing bid x is given by the area under ps(s) on the left side of x.
 </figcaption>
@@ -173,14 +164,14 @@ b_3=6.
 The optimal solution is shown in the following figure:
 
 <figure>
-<img src='/assets/blog_content/ad_auction/biding_strategy.png'
+<img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ad_auction/biding_strategy.png'
  alt="biding strategy" >
 <figcaption>Optimal bids for the case of having three types of auctions (described by the winning bid distribution ps(s)) and two types of click-through probabilities pc.
 </figcaption>
 </figure>
 
 <figure>
-<img src='/assets/blog_content/ad_auction/table.png'
+<img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/ad_auction/table.png'
  alt="table results" >
 <figcaption>
 Used parameters and optimal values. The <b>N (subset)</b> column refers to the number of auctions where the winning bid distribution functions and the user click-through probabilities are the same. The <b>x (analytical pdf)</b> column contains the optimal bid prices when using the analytical probability distribution function (pdf). The <b>x (spline pdf)</b> column contains the optimal bid prices when inferring the pdf from a sample of data points. The relative error of the optimal bid prices in both cases is at most 2%.

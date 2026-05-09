@@ -1,21 +1,42 @@
 ---
-layout:     post
-title:      "MLflow on Kubernetes"
-date:       2023-08-01 10:00:00 +0200
-front_img:  "assets/blog_content/mlflow/mlflow.png"
-subtitle:   "We will containerize and deploy a MLflow server on a Kubernetes cluster on Google cloud. We will also create the MLflow backend DB, the artifact store and all required service accounts, and secrets on Google cloud. This is achieved by using either gcloud SDK or terraform. The deployment code is also provided."
-github:     "https://github.com/ImScientist/mlflow"
-keywords:   "MLflow, Kubernetes,Google Cloud"
-permalink:  /posts/mlflow/
+layout: post
+title: "MLflow on Kubernetes"
+date: 2023-08-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/mlflow/mlflow.png"
+excerpt: "We will containerize and deploy a MLflow server on a Kubernetes cluster on Google cloud. We will also create the MLflow backend DB, the artifact store and all required service accounts, and secrets on Google cloud. This is achieved by using either…"
 ---
+
 <p>
 We will containerize and deploy a MLflow server on a Kubernetes cluster on Google cloud. We will also create the MLflow backend DB, the artifact store and all required service accounts, and secrets on Google cloud. This is achieved by using either gcloud SDK or terraform. The deployment code can be found <a href="https://github.com/ImScientist/mlflow">here</a>.
 </p>
-<figure>
-    <img src='/assets/blog_content/mlflow/mlflow.png' alt="Architecture" >
-</figure>
 
-<h3>1. Infrastructure</h3>
+<h3>Table of Contents</h3>
+<p>
+<ol class="toc-list">
+    <li>
+        <a href="#infrastructure">
+            <span class="title">Infrastructure</span>
+        </a>
+    </li>
+    <li>
+        <a href="#deployment_sdk">
+            <span class="title">Deployment with Google cloud SDK</span>
+        </a>
+    </li>
+    <li>
+        <a href="#deployment_terraform">
+            <span class="title">Deployment with terraform</span>
+        </a>
+    </li>
+    <li>
+        <a href="#resources">
+            <span class="title">Resources</span>
+        </a>
+    </li>
+</ol>
+</p>
+
+<h3 id="infrastructure">1. Infrastructure</h3>
 
 <p>
 We will create the following resources in Google cloud:
@@ -44,7 +65,7 @@ The kubernetes cluster contains:
 </ul>
 </p>
 
-<h3>2. Deployment with Google cloud SDK</h3>
+<h3 id="deployment_sdk">2. Deployment with Google cloud SDK</h3>
 
 <p>
 We will rely on the Google cloud SDK to create the resources of interest. To run the commands below you need to have gsutil, gcloud and OpenSSL CLIs installed.
@@ -71,7 +92,7 @@ We will rely on the Google cloud SDK to create the resources of interest. To run
 </ul>
 </p>
 
-<h3>3. Deployment with terraform</h3>
+<h3 id="deployment_terraform">3. Deployment with terraform</h3>
 <p>
 To understand the following code snippets you should look at the source code provided <a href="https://github.com/ImScientist/mlflow">here</a>.
 <ul>
@@ -90,7 +111,7 @@ The following command will create the required infrastructure (backend db, cloud
 </p>
 
 
-<h3>4. Resources</h3>
+<h3 id="resources">4. Resources</h3>
 
 <ul>
   <li>

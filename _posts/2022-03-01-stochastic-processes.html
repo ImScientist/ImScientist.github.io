@@ -1,13 +1,12 @@
 ---
-layout:     post
-title:      "Bayesian inference for stochastic processes: an analytically solvable problem"
-date:       2022-03-01 10:00:00 +0200
-front_img:  "assets/blog_content/variational_inference_p1/thumbnail.jpg"
-subtitle:   "We explain the application of the Bayesian inference approach to the case of having multiple trajectories of a stochastic process. We will consider an analytically solvable problem to address the question of how much the past values of a trajectory reduce our uncertainty about its future values. In addition, we will also solve the problem using the MCMC approach, implemented in the Tensorflow probability library, and compare both results."
-keywords:   "Time Series Analysis,Bayesian Modeling"
-github:     "https://github.com/ImScientist/ilovetfp"
-permalink:  /posts/stochastic_processes/
+layout: post
+title: "Bayesian inference for stochastic processes: an analytically solvable problem"
+date: 2022-03-01
+image: "https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/variational_inference_p1/thumbnail.jpg"
+excerpt: "We explain the application of the Bayesian inference approach to the case of having multiple trajectories of a stochastic process. We will consider an analytically solvable problem to address the question of how much the past values of a trajectory…"
+mathjax: true
 ---
+
 <p>
 We explain the application of the Bayesian inference approach, described in the
 previous blog post, to the case of having multiple trajectories of a stochastic
@@ -32,7 +31,7 @@ below:
 </p>
 
 <figure>
-    <img src='/assets/blog_content/stoch_process_p1/ssm.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/stoch_process_p1/ssm.png'
      alt="State space model schema" >
     <figcaption> Representation of a state space model: $Z_t \rightarrow Y_t$ means that
      $Y_t$ depends on $Z_t$
@@ -264,7 +263,7 @@ The impact of the prior on the $\omega$ posterior can be seen through the vertic
 
 
 <figure>
-    <img src='/assets/blog_content/stoch_process_p1/results.png'
+    <img src='https://raw.githubusercontent.com/ImScientist/ImScientist.github.io/master/assets/blog_content/stoch_process_p1/results.png'
      alt="Posterior distributions" >
     <figcaption> Posterior distributions of the growth rate $\omega$ obtained after $1$, $2$, $4$,
     and $8$ tree measurements. We have used the parameters $\omega = 0.5$, $\sigma_z = 0.2$,
