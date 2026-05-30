@@ -361,14 +361,14 @@ a:hover { text-decoration: underline; }
 /* Syntax highlight colours (Python / shell) */
 .gist .pl-k  { color: #c678dd !important; }  /* keywords: def, if, for, import … */
 .gist .pl-s,
-.gist .pl-s1 { color: #98c379 !important; }  /* strings */
+.gist .pl-s1 { color: #5f8f3b !important; }  /* strings */
 .gist .pl-c,
-.gist .pl-c1 { color: #e5c07b !important; }  /* constants / numbers */
-.gist .pl-en  { color: #61afef !important; }  /* function names */
+.gist .pl-c1 { color: #b7791f !important; }  /* constants / numbers */
+.gist .pl-en  { color: #3f8fd6 !important; }  /* function names */
 .gist .pl-e,
 .gist .pl-smi { color: #e06c75 !important; }  /* variables */
 .gist .pl-pds,
-.gist .pl-s .pl-pse .pl-s1 { color: #98c379 !important; }
+.gist .pl-s .pl-pse .pl-s1 { color: #5f8f3b !important; }
 .gist .pl-sr,
 .gist .pl-sre { color: #56b6c2 !important; }  /* regex */
 .gist .pl-v   { color: #e06c75 !important; }  /* variable */

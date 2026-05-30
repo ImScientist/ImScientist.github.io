@@ -2,6 +2,7 @@ title: "I ♥ DS"
 description: "Personal thoughts, ideas, and writing."
 baseurl: ""
 url: "https://imscientist.dev"
+google_analytics: "G-LE9S2F52LF"
 
 theme: minima
 permalink: pretty
