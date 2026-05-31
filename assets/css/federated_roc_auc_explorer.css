@@ -38,6 +38,12 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
+@media (min-width: 900px) {
+  .frae-metrics {
+    grid-template-columns: 1.05fr 0.9fr 1.05fr;
+  }
+}
+
 .frae-charts {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
@@ -46,10 +52,30 @@
   padding: 1rem 1.1rem;
 }
 
+.frae-metrics .frae-card {
+  padding: 0.8rem 0.9rem;
+}
+
+.frae-card-left,
+.frae-card-middle,
+.frae-card-right {
+  padding: 0.64rem 0.72rem;
+}
+
 .frae-control-grid,
 .frae-metric-stack {
   display: grid;
   gap: 0.8rem;
+}
+
+.frae-metrics .frae-control-grid,
+.frae-metrics .frae-metric-stack {
+  gap: 0.64rem;
+}
+
+.frae-card-left .frae-control-grid,
+.frae-card-middle .frae-metric-stack {
+  gap: 0.512rem;
 }
 
 .frae-control-group,
@@ -59,6 +85,10 @@
 
 .frae-control-group {
   gap: 0.45rem;
+}
+
+.frae-metrics .frae-control-group {
+  gap: 0.36rem;
 }
 
 .frae-control-group span,
@@ -71,13 +101,14 @@
   appearance: none;
   width: 100%;
   border: 1px solid #e0e4ea;
-  border-radius: 10px;
-  padding: 0.7rem 2.4rem 0.7rem 0.9rem;
+  border-radius: 8px;
+  padding: 0.3rem 1.8rem 0.3rem 0.7rem;
   font: inherit;
+  line-height: 1.2;
   color: #2d2d2d;
   background-color: #fff;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5.25L7 9.25L11 5.25' fill='none' stroke='%23666' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-position: right 0.85rem center;
+  background-position: right 0.6rem center;
   background-repeat: no-repeat;
   background-size: 0.85rem;
   box-shadow: 0 1px 2px rgba(23, 43, 77, 0.06);
@@ -105,6 +136,16 @@
   font-size: 0.95rem;
 }
 
+.frae-metrics .frae-score-list {
+  margin-top: 0.48rem;
+  gap: 0.28rem;
+}
+
+.frae-card-right .frae-score-list {
+  margin-top: 0.384rem;
+  gap: 0.224rem;
+}
+
 .frae-chart-panel h6 {
   margin: 0 0 0.55rem;
   font-size: 0.98rem;
@@ -119,6 +160,16 @@
 @media (max-width: 640px) {
   .frae-card {
     padding: 0.9rem;
+  }
+
+  .frae-metrics .frae-card {
+    padding: 0.72rem;
+  }
+
+  .frae-card-left,
+  .frae-card-middle,
+  .frae-card-right {
+    padding: 0.576rem;
   }
 
   .frae-chart {
