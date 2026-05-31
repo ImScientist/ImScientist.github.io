@@ -1,0 +1,148 @@
+.frae {
+  margin: 2rem 0;
+}
+
+.frae-status,
+.frae-card {
+  background: #ffffff;
+  border: 1px solid #e0e4ea;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+.frae-status {
+  padding: 1rem 1.2rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.frae-status.is-error {
+  color: #9f1239;
+  border-color: rgba(159, 18, 57, 0.18);
+  background: rgba(159, 18, 57, 0.05);
+}
+
+.frae-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.frae-intro {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.frae-kicker {
+  margin: 0;
+  color: #4a9eff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.frae-description {
+  margin: 0;
+  color: #666;
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.frae-metrics,
+.frae-charts {
+  display: grid;
+  gap: 1rem;
+}
+
+.frae-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.frae-charts {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.frae-card {
+  padding: 1rem 1.1rem;
+}
+
+.frae-control-grid,
+.frae-metric-stack {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.frae-control-group,
+.frae-metric-item {
+  display: grid;
+}
+
+.frae-control-group {
+  gap: 0.45rem;
+}
+
+.frae-control-group span,
+.frae-metric-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.frae select {
+  appearance: none;
+  width: 100%;
+  border: 1px solid #e0e4ea;
+  border-radius: 10px;
+  padding: 0.7rem 2.4rem 0.7rem 0.9rem;
+  font: inherit;
+  color: #2d2d2d;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5.25L7 9.25L11 5.25' fill='none' stroke='%23666' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 0.85rem center;
+  background-repeat: no-repeat;
+  background-size: 0.85rem;
+  box-shadow: 0 1px 2px rgba(23, 43, 77, 0.06);
+  cursor: pointer;
+}
+
+.frae select:focus {
+  outline: 2px solid rgba(74, 158, 255, 0.2);
+  outline-offset: 2px;
+  border-color: #4a9eff;
+}
+
+.frae strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.45rem;
+  color: #1a1a2e;
+}
+
+.frae-score-list {
+  margin: 0.6rem 0 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.frae-chart-panel h6 {
+  margin: 0 0 0.55rem;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.frae-chart {
+  min-height: 320px;
+}
+
+@media (max-width: 640px) {
+  .frae-card {
+    padding: 0.9rem;
+  }
+
+  .frae-chart {
+    min-height: 250px;
+  }
+}
+

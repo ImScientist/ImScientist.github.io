@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="{{ '/assets/css/federated_roc_auc_explorer.css' | relative_url }}" />
+
+<section
+  class="frae"
+  data-federated-roc-auc-explorer
+  data-content-url="{{ '/assets/blog_content/federated_learning/roc_auc_explorer/content.json' | relative_url }}"
+>
+  <div class="frae-status" data-role="status" aria-live="polite">
+    Loading interactive visualization…
+  </div>
+
+  <div class="frae-shell" data-role="shell" hidden>
+    <div class="frae-intro">
+      <p class="frae-kicker">Interactive visualization</p>
+      <p class="frae-description">
+        Compare the global ROC-AUC with the mean per-device ROC-AUC while varying how similar the positive and negative score distributions are across devices.
+      </p>
+    </div>
+
+    <section class="frae-metrics" aria-label="Controls and ROC-AUC summary">
+      <article class="frae-card frae-controls" aria-label="Controls">
+        <div class="frae-control-grid">
+          <label class="frae-control-group">
+            <span>Positive class similarity ratio</span>
+            <select data-role="positive-ratio"></select>
+          </label>
+          <label class="frae-control-group">
+            <span>Negative class similarity ratio</span>
+            <select data-role="negative-ratio"></select>
+          </label>
+        </div>
+      </article>
+
+      <article class="frae-card">
+        <div class="frae-metric-stack">
+          <div class="frae-metric-item">
+            <span class="frae-metric-label">Global ROC-AUC</span>
+            <strong data-role="global-score">—</strong>
+          </div>
+          <div class="frae-metric-item">
+            <span class="frae-metric-label">Mean pod ROC-AUC</span>
+            <strong data-role="mean-score">—</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="frae-card">
+        <span class="frae-metric-label">Pod ROC-AUC scores</span>
+        <ul class="frae-score-list" data-role="pod-scores"></ul>
+      </article>
+    </section>
+
+    <section class="frae-charts">
+      <article class="frae-card frae-chart-panel">
+        <h6>Positive class distribution</h6>
+        <div class="frae-chart" data-role="positive-chart"></div>
+      </article>
+      <article class="frae-card frae-chart-panel">
+        <h6>Negative class distribution</h6>
+        <div class="frae-chart" data-role="negative-chart"></div>
+      </article>
+    </section>
+  </div>
+
+  <noscript>This interactive chart needs JavaScript enabled to render the Plotly visualizations.</noscript>
+</section>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
+<script src="{{ '/assets/js/federated_roc_auc_explorer.js' | relative_url }}" defer></script>
+
